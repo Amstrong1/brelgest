@@ -76,6 +76,7 @@ var i = 0,
     htf_total = 0,
     tva_btotal = 0,
     tva_dtotal = 0,
+    rm_total = 0,
     aib_total = 0,
     ttc_total = 0;
 function addRow() {
@@ -279,11 +280,15 @@ function addRow() {
                 document.getElementById('total').classList.remove('hidden');
             }
         }
-        // calcul de AIB
-        aib_total = (hta_total + htb_total + htc_total + htd_total + hte_total + htf_total) * document.getElementsByName('aib')[0].value;
+        // calcul de la remise total
+        rm_total += rm_prod;
 
-         // calcul de ttc
-         ttc_total = hta_total + htb_total + htc_total + htd_total + hte_total + htf_total + tva_btotal + tva_dtotal + aib_total;
+        // calcul de AIB
+        var aib_value = document.getElementsByName('aib')[0].value.split("/");
+        aib_total = (hta_total + htb_total + htc_total + htd_total + hte_total + htf_total) * parseFloat(aib_value[0]);
+
+        // calcul de ttc
+        ttc_total = hta_total + htb_total + htc_total + htd_total + hte_total + htf_total + tva_btotal + tva_dtotal + aib_total;
 
         // affecter les != totaux a la vue
         document.getElementById('hta_total').value = hta_total;
@@ -295,12 +300,14 @@ function addRow() {
         document.getElementById('tva_btotal').value = tva_btotal;
         document.getElementById('tva_dtotal').value = tva_dtotal;
         document.getElementById('aib_total').value = parseInt(aib_total);
-        document.getElementById('ttc_total').value = ttc_total;
+        document.getElementById('ttc_total').value = parseInt(ttc_total);
+        document.getElementById('t_remise').value = parseInt(rm_total);
     }
 }
 
 // ft pour calculer l'aib lors du changement du combobox aib
 function aib_calcul() {
+    var aib_value = document.getElementsByName('aib')[0].value.split("/");
     document.getElementById('aib_total').value =
         (parseInt(document.getElementById('hta_total').value) +
             parseInt(document.getElementById('htb_total').value) +
@@ -308,7 +315,7 @@ function aib_calcul() {
             parseInt(document.getElementById('htd_total').value) +
             parseInt(document.getElementById('hte_total').value) +
             parseInt(document.getElementById('htf_total').value)) *
-        parseFloat(document.getElementsByName('aib')[0].value);
+        parseFloat(aib_value[0]);
 }
 
 // ft pour calculer l'mt rendu et reliquat du client
@@ -325,4 +332,22 @@ function reste_calcul() {
 function removeRow(oButton) {
     var empTab = document.getElementById('formTable');
     empTab.deleteRow(oButton.parentNode.rowIndex); // buttton -> td -> tr
+}
+
+
+// print function
+function print() {
+    document.getElementById('entete').classList.remove('hidden');
+    var element = document.getElementById('for_print');
+    var opt = {
+        margin: .5,
+        filename: 'myfile.pdf',
+        // html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
+
+    setTimeout(() => {
+        document.getElementById('entete').classList.add('hidden');
+      }, 5000);
 }

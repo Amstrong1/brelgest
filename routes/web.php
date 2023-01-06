@@ -31,7 +31,6 @@ use App\Http\Controllers\Admin\HomeController;
 Route::get('/', HomeController::class)->middleware(['auth'])->name('home');
 Route::get('/ajax-autocomplete-search', [FactureController::class,'selectSearch']);
 
-
 //dashboard routes
 Route::group(['middleware' => ['auth'], 'prefix' => 'dashboard', 'as' => 'admin.'], function () {
     //single action controllers

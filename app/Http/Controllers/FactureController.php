@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class FactureController extends Controller
 {
@@ -22,6 +23,7 @@ class FactureController extends Controller
             ->where('effacer', '=', 0)
             ->orderBy('NumFacture', 'desc')
             ->get();
+
         return view('admin.invoice.index', compact('invoices'));
     }
 
@@ -75,13 +77,27 @@ class FactureController extends Controller
      */
     public function store(Request $request)
     {
-        DB::table('t_facture')->insert([
-            'IDt_FacturePK' => '',
+        
+        $taux_tva = 0;
+
+        if ($request->tva_btotal != 0 || $request->htd_total != 0) {
+            $taux_tva = 0.18;
+        }
+
+        if (!$request->session()->has('gnGnVarNum_Fin_Id')) {
+            $request->session()->put('gnGnVarNum_Fin_Id', 0);
+        }
+        if ($request->session()->get('gnGnVarNum_Fin_Id') == 50) {
+            $request->session()->put('gnGnVarNum_Fin_Id', 0);
+        }
+
+        $save_invoice = DB::table('t_facture')->insert([
+            'IDt_FacturePK' => Auth::user()->CodeStruct . date('YmdHisv') . 'TFA' . $request->session()->get('gnGnVarNum_Fin_Id'),
             'AjouterPar' => Auth::user()->Login,
             'ModifierLe' => date('Y-m-d H-i-s'),
             'CodeStruct' => Auth::user()->CodeStruct,
             'NumFacture' => $request->num_fact,
-            'Date' => date('Y-m-d'),
+            'Date' => $request->fact_date,
             'Observation' => $request->object,
             'IDClientFK' =>  explode("/", $request->customer)[0],
             'Tota_Remise' => $request->t_remise,
@@ -96,27 +112,32 @@ class FactureController extends Controller
             'Montant_AIB' => $request->aib_total,
             'Montant_TTC' => $request->htf_total,
             'NumeroOperateur' => '',
-            'NomOperateur' => Auth::user()->Nom.Auth::user()->Prénom,
-            'TypeAIB' => $request->aib,
-            'TauxTVA' => '',
+            'NomOperateur' => Auth::user()->Nom . Auth::user()->Prénom,
+            'TypeAIB' => explode("/", $request->aib)[1],
+            'TauxTVA' => $taux_tva,
             'CategorieFacture' => '',
-            'MontantAIBRetenuParClient' => '',
+            'MontantAIBRetenuParClient' => $request->aib,
             'Montant_HT_D' => $request->htd_total,
             'Montant_TVA_D' => $request->tva_dtotal,
             'TableauDeDonnéesDeNormalisation' => '',
             'Montant_HT_C' => $request->htc_total,
             'Montant_HT_E' => $request->hte_total,
             'Montant_HT_F' => $request->htf_total,
-            'TypeFacture' => '',
+            'TypeFacture' => 'FV',
             'Montant_TVA_E' => '',
             'Montant_TS_D' => '',
             'Montant_TS_E' => '',
-            'DateAjoutLigne' => '',
+            'DateAjoutLigne' => date('Y-m-d H-i-s'),
             'MT_CLI_Percu' => $request->mt_percu,
             'MT_CLI_Rendu' => $request->mt_rendu,
             'MT_CLI_Reliquat' => $request->reliquat,
             'NatureFacture' => 'FT'
         ]);
+
+        if ($save_invoice) {
+            $request->session()->put('gnGnVarNum_Fin_Id', $request->session()->get('gnGnVarNum_Fin_Id')+1);
+            return redirect()->route('admin.invoice.create');
+        }
     }
 
     /**

@@ -35,6 +35,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+        integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
 </head>
@@ -51,11 +55,16 @@
         </header>
 
         <!-- Page Content -->
-        <main>
+        <main class="shadow-sm">
             {{ $slot }}
         </main>
+
+        @include('includes.footer')
+
     </div>
 
+    <script src="{{ asset('assets/js/alpine.min.js') }}" defer></script>
+    <script src="{{ asset('assets/js/init-alpine.js') }}"></script>
     <script src="{{ asset('assets/js/script.js') }}"></script>
 
 </body>
