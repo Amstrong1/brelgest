@@ -19,7 +19,7 @@
                                     class="font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">N°
                                     Facture</label>
 
-                                <input name="num_fact" type="number" disabled value="{{ $invoices->NumFacture + 1 }}"
+                                <input name="num_fact" type="number" value="{{ $invoices->NumFacture + 1 }}" disabled
                                     class="w-full pl-4 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input">
                             </div>
 
@@ -30,7 +30,8 @@
                                     class="w-full pl-4 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input">
                             </div>
 
-                            <div class="relative w-64 max-w-xl mr-6 ml-6 mt-6 mb-6 focus-within:text-purple-500">
+                            <div id="client_div"
+                                class="relative w-64 max-w-xl mr-6 ml-6 mt-6 mb-6 focus-within:text-purple-500">
                                 <label
                                     class="font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">Client</label>
 
@@ -54,27 +55,29 @@
 
                         {{-- Nouveau client --}}
                         <div>
-                            <h3 class="mt-6 ml-6 font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">
-                                Nouveau Client</h3>
+                            <button type="button" onclick="active_form()"
+                                class=" mt-6 ml-6 cursor-pointer w-64 max-w-xl pl-4 pr-4 py-2 rounded-md text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                                Nouveau Client
+                            </button>
                             <div class="relative w-64 max-w-xl mr-6 ml-6 mt-6 mb-6 focus-within:text-purple-500">
                                 <label for=""
                                     class="font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">Nom</label>
 
-                                <input name="new_name" type="text" value=""
+                                <input name="new_name" type="text" value="" disabled
                                     class="w-full pl-4 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input">
                             </div>
 
                             <div class="relative w-64 max-w-xl mr-6 ml-6 mt-6 mb-6 focus-within:text-purple-500">
                                 <label
                                     class="font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">IFU</label>
-                                <input name="new_ifu" type="text" value=""
+                                <input name="new_ifu" type="text" value="" disabled
                                     class="w-full pl-4 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input">
                             </div>
 
                             <div class="relative w-64 max-w-xl mr-6 ml-6 mt-6 mb-6 focus-within:text-purple-500">
                                 <label
                                     class="font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">Contact</label>
-                                <input name="new_contact" type="text" value=""
+                                <input name="new_contact" type="text" value="" disabled
                                     class="w-full pl-4 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input">
                             </div>
                         </div>
@@ -209,7 +212,7 @@
 
                         <div class="hidden mt-8" id="total">
                             <div class="flex justify-between items-stretch">
-                                <table id="total_ht">
+                                <table id="total_ht" class="m-2">
                                     <tr
                                         class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
                                         <td class="px-1 py-1">TOTAL HT_A</td>
@@ -260,7 +263,7 @@
                                         </td>
                                     </tr>
                                 </table>
-                                <table id="total_tva">
+                                <table id="total_tva" class="m-2">
                                     <tr
                                         class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
                                         <td class="px-1 py-1">TOTAL TVA_B</td>
@@ -300,7 +303,7 @@
                                                 type="text" name="ttc_total" id="ttc_total" disabled></td>
                                     </tr>
                                 </table>
-                                <table id="action" class="self-start">
+                                <table id="action" class="self-start m-2">
                                     <tr
                                         class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
                                         <td class="px-1 py-1">Montant percu</td>

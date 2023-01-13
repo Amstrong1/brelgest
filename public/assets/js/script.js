@@ -349,5 +349,15 @@ function print() {
 
     setTimeout(() => {
         document.getElementById('entete').classList.add('hidden');
-      }, 5000);
+    }, 5000);
+}
+
+document.getElementsByName('new_name')[0].disabled = true;
+    document.getElementsByName('new_ifu')[0].disabled = true;
+    document.getElementsByName('new_contact')[0].disabled = true;
+function active_form() {
+    document.getElementsByName('new_name')[0].disabled = false;
+    document.getElementsByName('new_ifu')[0].disabled = false;
+    document.getElementsByName('new_contact')[0].disabled = false;
+    document.getElementById('client_div').style.display = 'none';
 }

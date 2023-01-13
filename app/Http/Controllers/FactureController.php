@@ -77,7 +77,7 @@ class FactureController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $taux_tva = 0;
 
         if ($request->tva_btotal != 0 || $request->htd_total != 0) {
@@ -91,6 +91,34 @@ class FactureController extends Controller
             $request->session()->put('gnGnVarNum_Fin_Id', 0);
         }
 
+        if (!isset($request->customer)) {
+            $customer = $request->new_name;
+
+            $save_customer = DB::table('t_client')->insert([
+                'AjouterPar' => Auth::user()->Login,
+                'ModifierPar' => Auth::user()->Login,
+                'CodeStruct' => Auth::user()->CodeStruct,
+                'NomCli' => $request->new_name,
+                'NumIFU' => $request->new_ifu,
+                'Tel_1' => $request->new_contact,
+            ]);
+
+            if ($save_customer) {
+                $get_customer = DB::table('t_client')
+                    ->select('IDt_ClientPK', 'NomCli')
+                    ->where('CodeStruct', '=', Auth::user()->CodeStruct)
+                    ->orderByDesc('id')
+                    ->first();
+                $customer_id = $get_customer->IDt_ClientPK;
+                $customer = $get_customer->NomCli;
+            } else {
+                return redirect()->back()->withInput($request->input());
+            }
+        } else {
+            $customer_id = explode("/", $request->customer)[0];
+            $customer = explode("/", $request->customer)[1];
+        }
+
         $save_invoice = DB::table('t_facture')->insert([
             'IDt_FacturePK' => Auth::user()->CodeStruct . date('YmdHisv') . 'TFA' . $request->session()->get('gnGnVarNum_Fin_Id'),
             'AjouterPar' => Auth::user()->Login,
@@ -99,11 +127,11 @@ class FactureController extends Controller
             'NumFacture' => $request->num_fact,
             'Date' => $request->fact_date,
             'Observation' => $request->object,
-            'IDClientFK' =>  explode("/", $request->customer)[0],
+            'IDClientFK' =>  $customer_id,
             'Tota_Remise' => $request->t_remise,
             'DateCommande' => $request->fact_date,
             'Total_DejaPaye' => '',
-            'NomClient' => explode("/", $request->customer)[1],
+            'NomClient' => $customer,
             'Montant_HT_AEX' => $request->hta_total,
             'Montant_TVA_B' => $request->tva_btotal,
             'MontantTotal_TVA' => $request->tva_btotal + $request->tva_dtotal,
@@ -135,8 +163,10 @@ class FactureController extends Controller
         ]);
 
         if ($save_invoice) {
-            $request->session()->put('gnGnVarNum_Fin_Id', $request->session()->get('gnGnVarNum_Fin_Id')+1);
+            $request->session()->put('gnGnVarNum_Fin_Id', $request->session()->get('gnGnVarNum_Fin_Id') + 1);
             return redirect()->route('admin.invoice.create');
+        } else {
+            return redirect()->back()->withInput($request->input());
         }
     }
 

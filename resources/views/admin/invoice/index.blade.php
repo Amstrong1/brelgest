@@ -14,7 +14,7 @@
                             <th class="px-2 py-2">N° Facture</th>
                             <th class="px-2 py-2">Date </th>
                             <th class="px-2 py-2">Client</th>
-                            <th class="px-2 py-2">Montant</th>
+                            <th class="px-2 py-2" style="width: 100px">Montant</th>
                             <th class="px-2 py-2">N° d'avoir</th>
                             <th class="px-2 py-2">Objet</th>
                             <th class="px-2 py-2">Action</th>
