@@ -19,7 +19,15 @@ class User extends Authenticatable
      *
      * @var string[]
      */
-    protected $guarded = [];
+    protected $fillable = [
+        'IDGI_UserPK',
+        'Login',
+        'Nom',
+        'Prénom',
+        'Email',
+        'CodeStruct',
+        'MotDePasseCrypte',
+    ];
 
     /**
      * The attributes that should be hidden for serialization.

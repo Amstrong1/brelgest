@@ -8,7 +8,6 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 
 class RegisteredUserController extends Controller
@@ -34,21 +33,49 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'firstname' => ['required', 'string', 'max:255'],
+            'surname' => ['required', 'string', 'max:255'],
+            'login' => ['required', 'string', 'max:255', 'unique:gi_user'],
+            'email' => ['required', 'email', 'max:255'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        if (!$request->session()->has('gnGnVarNum_Fin_Id')) {
+            $request->session()->put('gnGnVarNum_Fin_Id', 0);
+        }
+        if ($request->session()->get('gnGnVarNum_Fin_Id') == 50) {
+            $request->session()->put('gnGnVarNum_Fin_Id', 0);
+        }
 
-        event(new Registered($user));
+        $check = User::where('CodeStruct', '=', $request->structure)->where('EstAdmin', '=', 1)->get();
+        // dd($check);
 
-        Auth::login($user);
+        foreach ($check as $key) {
+            if ($key->Login == $request->login_sup) {
+                $user = User::create([
+                    'IDGI_UserPK' => $request->structure . date('YmdHisv') . 'GUS' . $request->session()->get('gnGnVarNum_Fin_Id'),
+                    'Login' => $request->login,
+                    'Nom' => $request->surname,
+                    'Prénom' => $request->firstname,
+                    'Email' => $request->email,
+                    'CodeStruct' => $request->structure,
+                    'MotDePasseCrypte' => $request->password,
+                    'ModifierLe' => date('Y-m-d H-i-s'),
+                    'DateAjoutLigne' => date('Y-m-d H-i-s'),
+                ]);
 
-        return redirect(RouteServiceProvider::HOME);
+                $request->session()->put('gnGnVarNum_Fin_Id', $request->session()->get('gnGnVarNum_Fin_Id') + 1);
+
+                event(new Registered($user));
+
+                Auth::login($user);
+
+                return redirect(RouteServiceProvider::HOME);
+            }
+
+            else {
+                echo 'Vérifier le login du superviseur <br>';
+            }
+        }
     }
 }

@@ -54,7 +54,7 @@ $('.livesearch').select2({
                 results: $.map(data, function (item) {
                     return {
                         text: item.LibProd,
-                        id: item.id + '/' + item.PrixHT + '/' + item.AssujetisTVA
+                        id: item.id + '/' + item.PrixHT + '/' + item.AssujetisTVA + '/' + item.IDt_ProduitPK
                     }
                 })
             };
@@ -148,10 +148,8 @@ function addRow() {
             var rowCnt = empTab.rows.length;    // get the number of rows.
             var tr = empTab.insertRow(rowCnt); // table row.
             tr = empTab.insertRow(rowCnt);
-            // for naming cell's input
-            i++;
 
-            for (var c = 0; c < 7; c++) {
+            for (var c = 0; c < 8; c++) {
                 var td = document.createElement('td');          // TABLE DEFINITION.
                 td = tr.insertCell(c);
 
@@ -172,9 +170,9 @@ function addRow() {
                     // the 2nd column, will have designation.
                     var input = document.createElement('input');
 
-                    input.setAttribute('name', 'product' + i);
+                    input.setAttribute('name', 'product[]');
                     input.setAttribute('type', 'text');
-                    input.setAttribute('disabled', 'disabled');
+                    input.setAttribute('readonly', 'readonly');
                     input.setAttribute('class', 'product_name w-80 ml-1 mr-1 text-sm text-gray-700 dark:focus:shadow-outline-gray border-0 dark:text-gray-200 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input');
                     input.setAttribute('value', document.getElementById('liste').options[document.getElementById('liste').selectedIndex].text);
 
@@ -184,9 +182,9 @@ function addRow() {
                     // the 3rd column, will have tax.
                     var input = document.createElement('input');
 
-                    input.setAttribute('name', 'tax' + i);
+                    input.setAttribute('name', 'tax[]');
                     input.setAttribute('type', 'text');
-                    input.setAttribute('disabled', 'disabled');
+                    input.setAttribute('readonly', 'readonly');
                     input.setAttribute('class', 'product_tax w-12 ml-1 mr-1 text-sm text-gray-700 dark:focus:shadow-outline-gray border-0 dark:text-gray-200 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input');
                     input.setAttribute('value', document.getElementsByName('tax')[0].options[document.getElementsByName('tax')[0].selectedIndex].text);
 
@@ -196,7 +194,7 @@ function addRow() {
                     // the 4th column, will have qte.
                     var input = document.createElement('input');
 
-                    input.setAttribute('name', 'qte' + i);
+                    input.setAttribute('name', 'qte[]');
                     input.setAttribute('type', 'number');
                     input.setAttribute('class', 'qte_product w-24 ml-1 mr-1 text-sm text-gray-700 dark:focus:shadow-outline-gray border-0 dark:text-gray-200 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input');
                     input.setAttribute('value', document.getElementsByName('qte')[0].value);
@@ -207,9 +205,9 @@ function addRow() {
                     // the 5th column, will have unit price.
                     var input = document.createElement('input');
 
-                    input.setAttribute('name', 'pu' + i);
+                    input.setAttribute('name', 'pu[]');
                     input.setAttribute('type', 'text');
-                    input.setAttribute('disabled', 'disabled');
+                    input.setAttribute('readonly', 'readonly');
                     input.setAttribute('class', 'w-24 ml-1 mr-1 text-sm text-gray-700 dark:focus:shadow-outline-gray border-0 dark:text-gray-200 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input');
                     input.setAttribute('value', parseInt(selvalue_array[1]));
 
@@ -219,9 +217,9 @@ function addRow() {
                     // the 6th column, will have ttc price.
                     var input = document.createElement('input');
 
-                    input.setAttribute('name', 'ttc' + i);
+                    input.setAttribute('name', 'ttc[]');
                     input.setAttribute('type', 'text');
-                    input.setAttribute('disabled', 'disabled');
+                    input.setAttribute('readonly', 'readonly');
                     input.setAttribute('class', 'product_ttc w-28 ml-1 mr-1 text-sm text-gray-700 dark:focus:shadow-outline-gray border-0 dark:text-gray-200 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input');
 
                     // calcul remise
@@ -268,11 +266,21 @@ function addRow() {
                     // the 5th column, will have discount.
                     var input = document.createElement('input');
 
-                    input.setAttribute('name', 'remise' + i);
+                    input.setAttribute('name', 'remise[]');
                     input.setAttribute('type', 'text');
-                    input.setAttribute('disabled', 'disabled');
+                    input.setAttribute('readonly', 'readonly');
                     input.setAttribute('class', 'w-24 ml-1 mr-1 text-sm text-gray-700 dark:focus:shadow-outline-gray border-0 dark:text-gray-200 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input');
                     input.setAttribute('value', parseInt(rm_prod));
+
+                    td.appendChild(input);
+                }
+                if (c == 7) {
+                    // the hidden 6th column, will have product ID.
+                    var input = document.createElement('input');
+
+                    input.setAttribute('name', 'id[]');
+                    input.setAttribute('type', 'hidden');
+                    input.setAttribute('value', selvalue_array[3]);
 
                     td.appendChild(input);
                 }
@@ -353,11 +361,11 @@ function print() {
 }
 
 document.getElementsByName('new_name')[0].disabled = true;
-    document.getElementsByName('new_ifu')[0].disabled = true;
-    document.getElementsByName('new_contact')[0].disabled = true;
+document.getElementsByName('new_ifu')[0].disabled = true;
+document.getElementsByName('new_contact')[0].disabled = true;
 function active_form() {
     document.getElementsByName('new_name')[0].disabled = false;
     document.getElementsByName('new_ifu')[0].disabled = false;
     document.getElementsByName('new_contact')[0].disabled = false;
-    document.getElementById('client_div').style.display = 'none';
+    document.getElementById('form').removeChild(document.getElementById('client_div'));
 }

@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade\Pdf;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class FactureController extends Controller
 {
@@ -60,7 +61,7 @@ class FactureController extends Controller
         $products = [];
         if ($request->has('q')) {
             $search = $request->q;
-            $products = DB::table('t_produit')->select("id", "LibProd", "PrixHT", "AssujetisTVA")
+            $products = DB::table('t_produit')->select("id", "LibProd", "PrixHT", "AssujetisTVA", "IDt_ProduitPK")
                 ->where('CodeStruct', '=', Auth::user()->CodeStruct)
                 ->where('LibProd', 'LIKE', "%$search%")
                 ->where('effacer', '=', 0)
@@ -79,9 +80,11 @@ class FactureController extends Controller
     {
 
         $taux_tva = 0;
+        $paie_tva = 0;
 
         if ($request->tva_btotal != 0 || $request->htd_total != 0) {
             $taux_tva = 0.18;
+            $paie_tva = 1;
         }
 
         if (!$request->session()->has('gnGnVarNum_Fin_Id')) {
@@ -94,24 +97,27 @@ class FactureController extends Controller
         if (!isset($request->customer)) {
             $customer = $request->new_name;
 
+            $new_idClient = Auth::user()->CodeStruct . date('YmdHisv') . 'TCL' . $request->session()->get('gnGnVarNum_Fin_Id');
             $save_customer = DB::table('t_client')->insert([
+                'IDt_ClientPK' => $new_idClient,
+                'ModifierLe' => date('Y-m-d H-i-s'),
                 'AjouterPar' => Auth::user()->Login,
                 'ModifierPar' => Auth::user()->Login,
                 'CodeStruct' => Auth::user()->CodeStruct,
                 'NomCli' => $request->new_name,
                 'NumIFU' => $request->new_ifu,
                 'Tel_1' => $request->new_contact,
+                'PaieTVA' => $paie_tva,
+                'CategorieActivité' => $request->tax,
+                'DateAjoutLigne' => date('Y-m-d H-i-s'),
             ]);
 
             if ($save_customer) {
-                $get_customer = DB::table('t_client')
-                    ->select('IDt_ClientPK', 'NomCli')
-                    ->where('CodeStruct', '=', Auth::user()->CodeStruct)
-                    ->orderByDesc('id')
-                    ->first();
-                $customer_id = $get_customer->IDt_ClientPK;
-                $customer = $get_customer->NomCli;
+                Alert::toast('Client enregistré', 'success');
+                $customer_id = $new_idClient;
+                $customer = $request->new_name;
             } else {
+                Alert::toast('Une erreur est survenue', 'error');
                 return redirect()->back()->withInput($request->input());
             }
         } else {
@@ -119,12 +125,28 @@ class FactureController extends Controller
             $customer = explode("/", $request->customer)[1];
         }
 
+        $invoices = DB::table('t_facture')
+            ->select('NumFacture')
+            ->where('CodeStruct', '=', Auth::user()->CodeStruct)
+            ->where('NatureFacture', '=', 'FT')
+            ->where('effacer', '=', 0)
+            ->orderBy('NumFacture', 'desc')
+            ->first();
+        $num_fact = 0;
+        if (isset($invoices->NumFacture)) {
+            $num_fact = $invoices->NumFacture + 1;
+        } else {
+            $num_fact = 1;
+        }
+
+        $id_facture = Auth::user()->CodeStruct . date('YmdHisv') . 'TFA' . $request->session()->get('gnGnVarNum_Fin_Id');
+
         $save_invoice = DB::table('t_facture')->insert([
-            'IDt_FacturePK' => Auth::user()->CodeStruct . date('YmdHisv') . 'TFA' . $request->session()->get('gnGnVarNum_Fin_Id'),
+            'IDt_FacturePK' => $id_facture,
             'AjouterPar' => Auth::user()->Login,
             'ModifierLe' => date('Y-m-d H-i-s'),
             'CodeStruct' => Auth::user()->CodeStruct,
-            'NumFacture' => $request->num_fact,
+            'NumFacture' => $num_fact,
             'Date' => $request->fact_date,
             'Observation' => $request->object,
             'IDClientFK' =>  $customer_id,
@@ -162,10 +184,41 @@ class FactureController extends Controller
             'NatureFacture' => 'FT'
         ]);
 
-        if ($save_invoice) {
+        for ($i = 0; $i < count($request->product); $i++) {
+            $a = $i + 1;
+            $save_invoice_line = DB::table('t_lignefact')->insert([
+                'IDt_LigneFactPK' => Auth::user()->CodeStruct . date('YmdHisv') . 'TLF' . $request->session()->get('gnGnVarNum_Fin_Id'),
+                'AjouterPar' => Auth::user()->Login,
+                'ModifierPar' => Auth::user()->Login,
+                'ModifierLe' => date('Y-m-d H-i-s'),
+                'CodeStruct' => Auth::user()->CodeStruct,
+                'LibProd' => $request->product[$i],
+                'Qtte' => $request->qte[$i],
+                'PrixUniTTTC' => $request->pu[$i],
+                'SousTotalTTC' =>  $request->ttc[$i],
+                'NumOrdre' => $a,
+                'IDt_ProduitFK' => $request->id[$i],
+                'Remise' => $request->remise[$i],
+                'TauxTVA' => $taux_tva,
+                'MontantTS' => '',
+                'RefProd' => '',
+                'PrixUnitHT' => $request->pu[$i],
+                'IDt_FactureFK' => $id_facture,
+                'PrixUnitTS' => '',
+                'TypeTaxe' => $request->tax[$i],
+                'LaTVAEstIncluse' => $paie_tva,
+                'DateAjoutLigne' => date('Y-m-d H-i-s'),
+                'packproduit_nbre' => '',
+                'packproduit_prix' => '',
+            ]);
+        }
+
+        if ($save_invoice && $save_invoice_line) {
             $request->session()->put('gnGnVarNum_Fin_Id', $request->session()->get('gnGnVarNum_Fin_Id') + 1);
+            Alert::toast('Facture enregistrée', 'success');
             return redirect()->route('admin.invoice.create');
         } else {
+            Alert::toast('Une erreur est survenue', 'error');
             return redirect()->back()->withInput($request->input());
         }
     }

@@ -58,6 +58,8 @@
     <script src="{{ asset('assets/js/alpine.min.js') }}" defer></script>
     <script src="{{ asset('assets/js/init-alpine.js') }}"></script>
     <script src="{{ asset('assets/js/script.js') }}"></script>
+    @include('sweetalert::alert')
+
 </body>
 
 </html>

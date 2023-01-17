@@ -13,7 +13,7 @@
 
                     <div class="lg:flex lg:justify-between lg:mr-32">
                         {{-- Info facture --}}
-                        <div>
+                        <div id='form'>
                             <div class="relative w-64 max-w-xl mr-6 ml-6 mt-6 mb-6 focus-within:text-purple-500">
                                 <label for=""
                                     class="font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">N°
