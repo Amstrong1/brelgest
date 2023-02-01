@@ -22,8 +22,11 @@ class FactureController extends Controller
             ->where('CodeStruct', '=', Auth::user()->CodeStruct)
             ->where('NatureFacture', '=', 'FT')
             ->where('effacer', '=', 0)
-            ->orderBy('NumFacture', 'desc')
+            ->orderByDesc('Date')
+            ->orderByRaw('abs(NumFacture) desc')
             ->get();
+
+        // dd($invoices);
 
         return view('admin.invoice.index', compact('invoices'));
     }
@@ -150,7 +153,7 @@ class FactureController extends Controller
             'Date' => $request->fact_date,
             'Observation' => $request->object,
             'IDClientFK' =>  $customer_id,
-            'Tota_Remise' => $request->t_remise,
+            'Tota_Remise' => '',
             'DateCommande' => $request->fact_date,
             'Total_DejaPaye' => '',
             'NomClient' => $customer,
@@ -160,7 +163,7 @@ class FactureController extends Controller
             'Montant_HT_B' => $request->htb_total,
             'Montant_TS_B' => '',
             'Montant_AIB' => $request->aib_total,
-            'Montant_TTC' => $request->htf_total,
+            'Montant_TTC' => $request->ttc_total,
             'NumeroOperateur' => '',
             'NomOperateur' => Auth::user()->Nom . Auth::user()->Prénom,
             'TypeAIB' => explode("/", $request->aib)[1],
@@ -195,13 +198,13 @@ class FactureController extends Controller
                 'LibProd' => $request->product[$i],
                 'Qtte' => $request->qte[$i],
                 'PrixUniTTTC' => $request->pu[$i],
-                'SousTotalTTC' =>  $request->ttc[$i],
+                'SousTotalTTC' =>   $request->sub_price_total[$i],
                 'NumOrdre' => $a,
                 'IDt_ProduitFK' => $request->id[$i],
-                'Remise' => $request->remise[$i],
+                'Remise' => '',
                 'TauxTVA' => $taux_tva,
                 'MontantTS' => '',
-                'RefProd' => '',
+                'RefCodeBar' => '',
                 'PrixUnitHT' => $request->pu[$i],
                 'IDt_FactureFK' => $id_facture,
                 'PrixUnitTS' => '',
@@ -239,7 +242,7 @@ class FactureController extends Controller
             ->where('t_lignefact.IDt_FactureFK', '=', $fact)
             ->where('t_lignefact.effacer', '=', 0)
             ->get();
-        return view('admin.invoice.show', compact('details'));
+        return view('admin.invoice.show', compact('details', 'fact'));
     }
 
     /**

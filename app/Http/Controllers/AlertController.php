@@ -10,10 +10,12 @@ class AlertController extends Controller
     public function index()
     {
         $alerts = DB::table('t_produit')
-            ->select('RefProd', 'LibProd', 'QtteStock')
+            ->select('RefCodeBar', 'LibProd', 'QtteStock')
             ->where('CodeStruct', '=', Auth::user()->CodeStruct)
-            ->where('QtteStock', '<=', 'QtteMini')
+            ->whereColumn('QtteStock', '<=', 'QtteMini')
             ->where('effacer', '=', 0)
+            ->orderByDesc('QtteStock')
+            ->orderBy('LibProd', 'asc')
             ->get();
         return view('admin.stock.alert', compact('alerts'));
     }

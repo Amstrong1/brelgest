@@ -16,6 +16,9 @@ use App\Http\Controllers\StatProdController;
 use App\Http\Controllers\EmptySoonController;
 use App\Http\Controllers\ProdFamilController;
 use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\CreditController;
+use App\Http\Controllers\InvLineController;
+use App\Http\Controllers\ProformaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +32,7 @@ use App\Http\Controllers\Admin\HomeController;
 */
 
 Route::get('/', HomeController::class)->middleware(['auth'])->name('home');
-Route::get('/ajax-autocomplete-search', [FactureController::class,'selectSearch']);
+Route::get('/ajax-autocomplete-search', [FactureController::class, 'selectSearch']);
 
 //dashboard routes
 Route::group(['middleware' => ['auth'], 'prefix' => 'dashboard', 'as' => 'admin.'], function () {
@@ -49,6 +52,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'dashboard', 'as' => 'admin.
     Route::group(['prefix' => 'statistique', 'as' => 'statistique.'], function () {
         Route::match(['get', 'post'], '/consumer', [StatCliController::class, 'index'])->name('consumer');
         Route::match(['get', 'post'], '/consumes', [StatProdController::class, 'index'])->name('consumes');
+        Route::match(['get', 'post'], '/lines', [InvLineController::class, 'index'])->name('lines');
     });
 
     Route::group(['prefix' => 'stock', 'as' => 'stock.'], function () {
@@ -60,8 +64,12 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'dashboard', 'as' => 'admin.
         Route::get('/empty_soon', [EmptySoonController::class, 'index'])->name('empty_soon');
     });
 
-    Route::resource('/invoice', FactureController::class);
+    Route::group(['prefix' => 'invoice', 'as' => 'invoice.'], function () {
+        Route::get('/credit_note', [CreditController::class, 'index'])->name('credit_note');
+        Route::get('/proforma', [ProformaController::class, 'index'])->name('proforma');
+    });
 
+    Route::resource('/invoice', FactureController::class);
 });
 
 

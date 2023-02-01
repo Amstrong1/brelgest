@@ -11,8 +11,9 @@ class ExitController extends Controller
     {
         $exits = DB::table('t_sortiestock')
             ->join('t_produit', 't_sortiestock.IDt_ProduitFK', '=', 't_produit.IDt_ProduitPK')
-            ->select('t_sortiestock.DateSortie', 't_sortiestock.LibProd', 't_sortiestock.Qtte', 't_sortiestock.MontantTotal', 't_sortiestock.Observation', 't_produit.RefProd')
+            ->select('t_sortiestock.DateSortie', 't_sortiestock.LibProd', 't_sortiestock.Qtte', 't_sortiestock.MontantTotal', 't_sortiestock.Observation', 't_produit.RefCodeBar')
             ->where('t_sortiestock.CodeStruct', '=', Auth::user()->CodeStruct)
+            ->where('t_produit.effacer', '=', 0)
             ->where('t_sortiestock.effacer', '=', 0)
             ->orderByDesc('t_sortiestock.DateSortie')
             ->get();

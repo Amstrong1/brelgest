@@ -12,6 +12,7 @@
                         <tr
                             class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
                             <th class="px-2 py-2">Reference</th>
+                            <th class="px-2 py-2">Famille</th>
                             <th class="px-2 py-2">Produit</th>
                             <th class="px-2 py-2">Description</th>
                             <th class="px-2 py-2">Prix</th>
@@ -23,7 +24,10 @@
                         @foreach ($products as $product)
                             <tr class="text-gray-700 dark:text-gray-400">
                                 <td class="px-2 py-2">
-                                    {{ $product->RefProd }}
+                                    {{ $product->RefCodeBar }}
+                                </td>
+                                <td class="px-2 py-2 text-sm">
+                                    {{ $product->LibelléFam }}
                                 </td>
                                 <td class="px-2 py-2 text-sm">
                                     {{ $product->LibProd }}

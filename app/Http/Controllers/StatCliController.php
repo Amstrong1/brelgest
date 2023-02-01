@@ -25,6 +25,7 @@ class StatCliController extends Controller
                 ->where('t_facture.CodeStruct', '=', Auth::user()->CodeStruct)
                 ->whereBetween('t_facture.Date', [$request->start, $request->end])
                 ->groupByRaw('t_facture.IDClientFK, t_client.IDt_clientPK')
+                ->where('t_facture.NatureFacture', '=', 'FT')
                 ->where('t_facture.effacer', '=', 0)
                 ->where('t_client.effacer', '=', 0)
                 ->get();             

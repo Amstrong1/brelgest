@@ -2,7 +2,7 @@
 @section('content')
     <div class="container grid px-6 mx-auto">
         <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-            Liste des factures
+            Liste des factures proforma
         </h2>
 
         <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
@@ -21,11 +21,11 @@
                     </thead>
                     <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
                         @foreach ($invoices as $invoice)
-                            <tr class="text-gray-700 dark:text-gray-400" id="{{ $invoice->IDt_FacturePK }}">
+                            <tr class="text-gray-700 dark:text-gray-400">
                                 <td class="px-2 py-2 text-sm">
                                     {{ $invoice->NumFacture }}
                                 </td>
-                                <td data-order="{{ $invoice->Date }}" class="px-2 py-2 text-sm">
+                                <td class="px-2 py-2 text-sm">
                                     @php
                                         $date_table = explode('-', $invoice->Date);
                                         echo $date_table[2];
@@ -33,8 +33,7 @@
                                         echo $date_table[1];
                                         echo '-';
                                         echo $date_table[0];
-                                    @endphp
-                                </td>
+                                    @endphp </td>
                                 <td class="px-2 py-2 text-sm">
                                     {{ $invoice->NomClient }}
                                 </td>

@@ -46,6 +46,17 @@
                             </div>
 
                             <div class="relative w-64 max-w-xl mr-6 ml-6 mt-6 mb-6 focus-within:text-purple-500">
+                                <label class="font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">Taux AIB
+                                </label>
+                                <select name="aib" onchange="aib_calcul()"
+                                class="w-full pl-4 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input">
+                                <option value="0/AIB0">AIB0</option>
+                                    <option value="0.01/AIB1">AIB1</option>
+                                    <option value="0.05/AIB5">AIB5</option>
+                                </select>
+                            </div>
+
+                            <div class="relative w-64 max-w-xl mr-6 ml-6 mt-6 mb-6 focus-within:text-purple-500">
                                 <label
                                     class="font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">Objet</label>
                                 <textarea name="object" style="resize: none"
@@ -113,12 +124,6 @@
 
                     {{-- edition facture --}}
                     <div class="md:flex md:flex-row">
-                        <div class="w-20 mt-6 mb-6 ml-6 mr-6 focus-within:text-purple-500">
-                            <label
-                                class="font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">Qte</label>
-                            <input name="qte" type="number" value="1"
-                                class="w-20 text-sm text-gray-700 bg-gray-100 border-0 rounded-md dark:focus:shadow-outline-gray dark:bg-gray-700 dark:text-gray-200 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input">
-                        </div>
                         <div class="w-80 mt-6 mb-6 ml-6 mr-6 focus-within:text-purple-500">
                             <label
                                 class="font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">Produit</label>
@@ -127,34 +132,37 @@
                             </select>
                         </div>
                         <div class="w-20 mt-6 mb-6 ml-6 mr-6 focus-within:text-purple-500">
+                            <label
+                                class="font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">Qte</label>
+                            <input name="qte" type="number" value="1"
+                                class="w-20 text-sm text-gray-700 bg-gray-100 border-0 rounded-md dark:focus:shadow-outline-gray dark:bg-gray-700 dark:text-gray-200 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input">
+                        </div>
+                        {{-- <div class="w-36 mt-6 mb-6 ml-6 mr-6 focus-within:text-purple-500">
+                            <label
+                                class="font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">Prix Unitaire</label>
+                            <input name="pu_prod" type="number" value=""
+                                class="w-36 text-sm text-gray-700 bg-gray-100 border-0 rounded-md dark:focus:shadow-outline-gray dark:bg-gray-700 dark:text-gray-200 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input">
+                        </div> --}}
+                        <div class="w-20 mt-6 mb-6 ml-6 mr-6 focus-within:text-purple-500">
                             <label class="font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">Type
                                 Taxe</label>
                             <select name="tax"
                                 class="w-20 text-sm text-gray-700 bg-gray-100 border-0 rounded-md dark:focus:shadow-outline-gray dark:bg-gray-700 dark:text-gray-200 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input">
                                 <option value="A">A</option>
                                 <option value="B">B</option>
-                                <option value="C">C</option>
+                                {{-- <option value="C">C</option> --}}
                                 <option value="D">D</option>
                                 <option value="E">E</option>
-                                <option value="F">F</option>
+                                {{-- <option value="F">F</option> --}}
                             </select>
                         </div>
-                        <div class="w-20 mt-6 mb-6 ml-6 mr-6 focus-within:text-purple-500">
+                        {{-- <div class="w-20 mt-6 mb-6 ml-6 mr-6 focus-within:text-purple-500">
                             <label class="font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">%
                                 Remise</label>
                             <input name="remise" type="text" value="0.00"
                                 class="w-20 text-sm text-gray-700 bg-gray-100 border-0 rounded-md dark:focus:shadow-outline-gray dark:bg-gray-700 dark:text-gray-200 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input">
-                        </div>
-                        <div class="w-24 mt-6 mb-6 ml-6 mr-6 focus-within:text-purple-500">
-                            <label class="font-semibold tracking-wide text-left text-gray-500 dark:text-gray-400">Taux AIB
-                            </label>
-                            <select name="aib" onchange="aib_calcul()"
-                                class="w-24 text-sm text-gray-700 bg-gray-100 border-0 rounded-md dark:focus:shadow-outline-gray dark:bg-gray-700 dark:text-gray-200 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input">
-                                <option value="0/AIB0">AIB0</option>
-                                <option value="0.01/AIB1">AIB1</option>
-                                <option value="0.05/AIB5">AIB5</option>
-                            </select>
-                        </div>
+                        </div> --}}
+                        
                         <div class="w-24 mt-6 mb-6 ml-6 mr-6 focus-within:text-purple-500">
                             <button type="button" id="add"
                                 class="w-24 cursor-pointer mt-4 mr-2 py-2 px-3 rounded-md text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
@@ -163,6 +171,7 @@
                         </div>
                     </div>
 
+                    {{-- entete de la facture --}}
                     <div id="for_print">
                         <div id="entete" class="hidden p-4 text-xs mb-4">
                             <div class="mb-4">
@@ -202,8 +211,8 @@
                                     <th class="px-2 py-3">Taxe</th>
                                     <th class="px-2 py-3">Qte</th>
                                     <th class="px-2 py-3">Prix Unit HT</th>
+                                    <th class="px-2 py-3">Sous Total</th>
                                     <th class="px-2 py-3">Total TTC</th>
-                                    <th class="px-2 py-3">Remise</th>
                                 </tr>
                             </thead>
                             <tbody id="formTable" class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
@@ -230,14 +239,14 @@
                                                 value="0" type="text" name="htb_total" id="htb_total" disabled>
                                         </td>
                                     </tr>
-                                    <tr
+                                    {{-- <tr
                                         class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
                                         <td class="px-1 py-1">TOTAL HT_C</td>
                                         <td class="px-1 py-1"> <input
                                                 class="w-28 ml-1 mr-1 text-sm text-gray-700 bg-gray-100 dark:bg-gray-800 text-right border-0 dark:text-gray-200 form-input"
                                                 value="0" type="text" name="htc_total" id="htc_total" disabled>
                                         </td>
-                                    </tr>
+                                    </tr> --}}
                                     <tr
                                         class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
                                         <td class="px-1 py-1">TOTAL HT_D</td>
@@ -254,14 +263,14 @@
                                                 value="0" type="text" name="hte_total" id="hte_total" disabled>
                                         </td>
                                     </tr>
-                                    <tr
+                                    {{-- <tr
                                         class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
                                         <td class="px-1 py-1">TOTAL HT_F</td>
                                         <td class="px-1 py-1"> <input
                                                 class="w-28 ml-1 mr-1 text-sm text-gray-700 bg-gray-100 dark:bg-gray-800 text-right border-0 dark:text-gray-200 form-input"
                                                 value="0" type="text" name="htf_total" id="htf_total" disabled>
                                         </td>
-                                    </tr>
+                                    </tr> --}}
                                 </table>
                                 <table id="total_tva" class="m-2">
                                     <tr
@@ -280,14 +289,14 @@
                                                 type="text" name="tva_dtotal" id="tva_dtotal" disabled>
                                         </td>
                                     </tr>
-                                    <tr
+                                    {{-- <tr
                                         class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
                                         <td class="px-1 py-1">TOTAL REMISE</td>
                                         <td class="px-1 py-1"><input
                                                 class="w-28 ml-1 mr-1 text-sm text-gray-700 bg-gray-100 dark:bg-gray-800 text-right border-0 dark:text-gray-200 form-input"
                                                 type="text" name="t_remise" id="t_remise" disabled>
                                         </td>
-                                    </tr>
+                                    </tr> --}}
                                     <tr
                                         class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
                                         <td class="px-1 py-1">TOTAL AIB</td>

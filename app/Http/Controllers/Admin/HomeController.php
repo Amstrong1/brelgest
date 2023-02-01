@@ -27,8 +27,8 @@ class HomeController extends Controller
         $alerts_req2 = DB::table('t_produit')
             ->select('*')
             ->where('CodeStruct', '=', Auth::user()->CodeStruct)
+            ->whereColumn('QtteStock', '<=', 't_produit.QtteMini')
             ->where('QtteStock', '>', 0)
-            ->where('QtteStock', '<=', 't_produit.QtteMini')
             ->where('effacer', '=', 0)
             ->count();
 
@@ -64,7 +64,7 @@ class HomeController extends Controller
             ->where('effacer', '=', 0)
             ->get();
 
-        $users_req = User::where('CodeStruct', '=', Auth::user()->CodeStruct)->count();;
+        $users_req = User::where('CodeStruct', '=', Auth::user()->CodeStruct)->where('Effacer', '=', '0')->count();;
 
         return view('admin.index', compact(
             'alerts_req',

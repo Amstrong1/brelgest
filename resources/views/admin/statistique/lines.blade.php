@@ -2,13 +2,13 @@
 @section('content')
     <div class="container grid px-6 mx-auto">
         <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-            Statistique par produit
+            Journal des lignes de facture
         </h2>
 
         <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
             <div class="w-full overflow-x-auto">
 
-                <form class="md:flex md:justify-start md:flex-1 lg:mr-32" action="{{ route('admin.statistique.consumes') }}"
+                <form class="md:flex md:justify-start md:flex-1 lg:mr-32" action="{{ route('admin.statistique.lines') }}"
                     method="post">
                     @csrf
                     <div class="relative w-64 max-w-xl mr-6 ml-6 mt-6 mb-6 focus-within:text-purple-500">
@@ -53,31 +53,66 @@
                     </div>
                 </form>
 
-                @if ($consumes != null)
+                @if ($invlines != null)
                     <table id="datatable_prod" class="w-full p-6 whitespace-no-wrap">
                         <thead>
                             <tr
                                 class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-                                <th class="px-2 py-2">Ref. Produit</th>
-                                <th class="px-2 py-2">Nom produit</th>
-                                <th class="px-2 py-2">Qte</th>
-                                <th class="px-2 py-2">Total TTC</th>
+                                <th class="px-2 py-2">Date Facture</th>
+                                <th class="px-2 py-2">Client</th>
+                                <th class="px-2 py-2">N° Facture</th>
+                                <th class="px-2 py-2">Réf Prod</th>
+                                <th class="px-2 py-2">Désignation</th>
+                                <th class="px-2 py-2">Taxe</th>
+                                <th class="px-2 py-2">Qtée</th>
+                                <th class="px-2 py-2">PU HT</th>
+                                <th class="px-2 py-2">PU TTC</th>
+                                <th class="px-2 py-2">Sous Total</th>
+                                <th class="px-2 py-2">Remise (%)</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                            @foreach ($consumes as $consume)
+                            @foreach ($invlines as $invline)
                                 <tr class="text-gray-700 dark:text-gray-400">
-                                    <td class="px-2 py-2 text-sm">
-                                        {{ $consume->RefCodeBar }}
+                                    <td data-order="{{ $invline->Date }}" class="px-2 py-2 text-sm">
+                                        @php
+                                            $date_table = explode('-', $invline->Date);
+                                            echo $date_table[2];
+                                            echo '-';
+                                            echo $date_table[1];
+                                            echo '-';
+                                            echo $date_table[0];
+                                        @endphp
                                     </td>
                                     <td class="px-2 py-2 text-sm">
-                                        {{ $consume->LibProd }}
+                                        {{ $invline->NomClient }}
                                     </td>
-                                    <td data-order="{{ $consume->total_sales }}" class="px-2 py-2 text-sm">
-                                        {{ number_format($consume->total_sales, 0, '', ' ') }}
+                                    <td class="px-2 py-2 text-sm">
+                                        {{ $invline->NumFacture }}
                                     </td>
-                                    <td data-order="{{ $consume->total_ttc }}" class="px-2 py-2 text-sm">
-                                        {{ number_format($consume->total_ttc, 0, '', ' ') }}
+                                    <td class="px-2 py-2 text-sm">
+                                        {{ $invline->RefCodeBar }}
+                                    </td>
+                                    <td class="px-2 py-2 text-sm">
+                                        {{ $invline->LibProd }}
+                                    </td>
+                                    <td class="px-2 py-2 text-sm">
+                                        {{ $invline->TypeTaxe }}
+                                    </td>
+                                    <td data-order="{{ $invline->Qtte }}" class="px-2 py-2 text-sm">
+                                        {{ number_format($invline->Qtte, 0, '', ' ') }}
+                                    </td>
+                                    <td data-order="{{ $invline->PrixUnitHT }}" class="px-2 py-2 text-sm">
+                                        {{ number_format($invline->PrixUnitHT, 0, '', ' ') }}
+                                    </td>
+                                    <td data-order="{{ $invline->PrixUniTTTC }}" class="px-2 py-2 text-sm">
+                                        {{ number_format($invline->PrixUniTTTC, 0, '', ' ') }}
+                                    </td>
+                                    <td data-order="{{ $invline->SousTotalTTC }}" class="px-2 py-2 text-sm">
+                                        {{ number_format($invline->SousTotalTTC, 0, '', ' ') }}
+                                    </td>
+                                    <td data-order="{{ $invline->Remise }}" class="px-2 py-2 text-sm">
+                                        {{ number_format($invline->Remise, 0, '', ' ') }}
                                     </td>
                                 </tr>
                             @endforeach

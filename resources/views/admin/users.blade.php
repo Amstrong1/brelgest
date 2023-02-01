@@ -34,7 +34,7 @@
                                     {{ $user->contact }}
                                 </td>
                                 <td class="px-2 py-2">
-                                    @if ($user->valide == 1)
+                                    @if ($user->valide == 0)
                                         Actif
                                     @else
                                         Non actif

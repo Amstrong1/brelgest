@@ -19,8 +19,8 @@
                     <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
                         @foreach ($alerts as $alert)
                             <tr class="text-gray-700 dark:text-gray-400">
-                                <td class="px-2 py-2">
-                                    {{ $alert->RefProd }}
+                                <td class="px-2 py-2 text-sm">
+                                    {{ $alert->RefCodeBar }}
                                 </td>
                                 <td class="px-2 py-2 text-sm">
                                     {{ $alert->LibProd }}

@@ -19,7 +19,7 @@
                         ->where('effacer', '=', 0)
                         ->first();
                 @endphp
-                Brelgest - {{ $infos->Denomination }}
+                {{ $infos->Denomination }}
             </div>
         </div>
         <ul class="flex items-center flex-shrink-0 space-x-6">

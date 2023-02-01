@@ -24,13 +24,20 @@
                         @foreach ($entries as $entrie)
                             <tr class="text-gray-700 dark:text-gray-400">
                                 <td class="px-2 py-2">
-                                    {{ $entrie->RefProd }}
+                                    {{ $entrie->RefCodeBar }}
                                 </td>
                                 <td class="px-2 py-2 text-sm">
                                     {{ $entrie->LibProd }}
                                 </td>
                                 <td class="px-2 py-2">
-                                    {{ $entrie->DateEntree }}
+                                    @php
+                                        $date_table = explode('-', $entrie->DateEntree);
+                                        echo $date_table[2];
+                                        echo '-';
+                                        echo $date_table[1];
+                                        echo '-';
+                                        echo $date_table[0];
+                                    @endphp
                                 </td>
                                 <td class="px-2 py-2 text-sm">
                                     {{ $entrie->Qtte }}

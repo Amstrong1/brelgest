@@ -23,13 +23,20 @@
                         @foreach ($exits as $exit)
                             <tr class="text-gray-700 dark:text-gray-400">
                                 <td class="px-2 py-2 text-sm">
-                                    {{ $exit->RefProd }}
+                                    {{ $exit->RefCodeBar }}
                                 </td>
                                 <td class="px-2 py-2 text-sm">
                                     {{ $exit->LibProd }}
                                 </td>
                                 <td class="px-2 py-2">
-                                    {{ $exit->DateSortie }}
+                                    @php
+                                        $date_table = explode('-', $exit->DateSortie);
+                                        echo $date_table[2];
+                                        echo '-';
+                                        echo $date_table[1];
+                                        echo '-';
+                                        echo $date_table[0];
+                                    @endphp
                                 </td>
                                 <td class="px-2 py-2 text-sm">
                                     {{ $exit->Qtte }}

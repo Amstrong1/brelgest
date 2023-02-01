@@ -2,7 +2,7 @@
 @section('content')
     <div class="container grid px-6 mx-auto">
         <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-            Liste des factures
+            Liste des factures d'avoir
         </h2>
 
         <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
@@ -11,7 +11,7 @@
                     <thead>
                         <tr
                             class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-                            <th class="px-2 py-2">N° Facture</th>
+                            <th class="px-2 py-2">N° Facture d'avoir</th>
                             <th class="px-2 py-2">Date </th>
                             <th class="px-2 py-2">Client</th>
                             <th class="px-2 py-2" style="width: 100px">Montant</th>
@@ -20,33 +20,34 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                        @foreach ($invoices as $invoice)
-                            <tr class="text-gray-700 dark:text-gray-400" id="{{ $invoice->IDt_FacturePK }}">
-                                <td class="px-2 py-2 text-sm">
-                                    {{ $invoice->NumFacture }}
+                        @foreach ($fa_invoices as $fa_invoice)
+                            <tr class="text-gray-700 dark:text-gray-400">
+                                <td data-order="{{ $fa_invoice->NumFacture_FA }}" class="px-2 py-2 text-sm">
+                                    {{ $fa_invoice->NumFacture_FA }}
                                 </td>
-                                <td data-order="{{ $invoice->Date }}" class="px-2 py-2 text-sm">
+                                
+                                <td data-order="{{ $fa_invoice->DateFactureAvoir }}" class="px-2 py-2 text-sm">
                                     @php
-                                        $date_table = explode('-', $invoice->Date);
-                                        echo $date_table[2];
+                                        $date_table_avoir = explode('-', $fa_invoice->DateFactureAvoir);
+                                        echo $date_table_avoir[2];
                                         echo '-';
-                                        echo $date_table[1];
+                                        echo $date_table_avoir[1];
                                         echo '-';
-                                        echo $date_table[0];
+                                        echo $date_table_avoir[0];
                                     @endphp
                                 </td>
                                 <td class="px-2 py-2 text-sm">
-                                    {{ $invoice->NomClient }}
+                                    {{ $fa_invoice->NomClient }}
+                                </td>
+                                <td data-order="{{ $fa_invoice->Montant_TTC }}" class="px-2 py-2 text-sm">
+                                    {{ number_format($fa_invoice->Montant_TTC, 0, '', ' ') }}
                                 </td>
                                 <td class="px-2 py-2 text-sm">
-                                    {{ number_format($invoice->Montant_TTC, 0, '', ' ') }}
-                                </td>
-                                <td class="px-2 py-2 text-sm">
-                                    {{ $invoice->Observation }}
+                                    {{ $fa_invoice->Observation }}
                                 </td>
                                 <td class="px-2 py-2">
                                     <div class="flex items-center space-x-4 text-sm">
-                                        <a href="{{ route('admin.invoice.show', [$invoice->IDt_FacturePK]) }}"
+                                        <a href="{{ route('admin.invoice.show', [$fa_invoice->IDt_FacturePK]) }}"
                                             class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
                                             aria-label="Edit">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
