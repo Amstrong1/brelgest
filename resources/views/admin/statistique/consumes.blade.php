@@ -55,7 +55,7 @@
                         <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
                             @foreach ($tot_consumes as $tot_consume)
                                 <tr class="text-gray-700 dark:text-gray-400">
-                                    <td class="px-2 py-2 text-sm">Total TTC</td>
+                                    <td class="px-2 py-2 text-sm">Total TTC de la période défini</td>
                                     <td class="px-2 py-2 text-sm">
 
                                         {{ number_format($tot_consume->Montant_TTC, 0, '', ' ') }}
