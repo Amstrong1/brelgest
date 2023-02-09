@@ -54,6 +54,20 @@
                 </form>
 
                 @if ($invlines != null)
+                    <table class="w-full whitespace-no-wrap mb-4">
+                        <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                            @foreach ($invlines_sum as $invline_sum)
+                                <tr class="text-gray-700 dark:text-gray-400">
+                                    <td class="px-2 py-2 text-sm">Total TTC</td>
+                                    <td class="px-2 py-2 text-sm">
+
+                                        {{ number_format($invline_sum->Montant_TTC, 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
                     <table id="datatable_prod" class="w-full p-6 whitespace-no-wrap">
                         <thead>
                             <tr
@@ -118,6 +132,8 @@
                             @endforeach
                         </tbody>
                     </table>
+                @else
+                    Aucune données à afficher
                 @endif
             </div>
         </div>

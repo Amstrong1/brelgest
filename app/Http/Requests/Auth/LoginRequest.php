@@ -46,19 +46,21 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        $user = User::where('Login', $this->login)->first();
-        if ($user !== null) {
-            // if ($user->valide == 1) {
+        if (Str::lower($this->login) != 'superviseur') {
+            $user = User::where('Login', $this->login)->first();
+            if ($user !== null) {
+                // if ($user->valide == 1) {
                 if ($this->password !== $user->MotDePasseCrypte) {
                     RateLimiter::hit($this->throttleKey());
-        
+
                     throw ValidationException::withMessages([
                         'Login' => trans('auth.failed'),
                     ]);
                 }
                 Auth::login($user, $this->boolean('remember'));
                 RateLimiter::clear($this->throttleKey());
-            // }            
+                // }            
+            }
         }
     }
 
@@ -71,7 +73,7 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited()
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
@@ -94,6 +96,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey()
     {
-        return Str::lower($this->input('login')).'|'.$this->ip();
+        return Str::lower($this->input('login')) . '|' . $this->ip();
     }
 }

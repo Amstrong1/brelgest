@@ -34,6 +34,7 @@
             font-family: 'Nunito';
         }
     </style>
+    @laravelPWA
 </head>
 
 <body>
@@ -50,7 +51,7 @@
                 @yield('content')
             </main>
 
-           @include('includes.footer')
+            @include('includes.footer')
 
         </div>
     </div>

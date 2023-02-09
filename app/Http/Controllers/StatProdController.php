@@ -12,6 +12,7 @@ class StatProdController extends Controller
     public function index(Request $request)
     {
         $consumes = null;
+        $tot_consumes = null;
 
         if (request()->method() == 'POST') {
             $validate = Validator::make($request->all(), [
@@ -23,7 +24,12 @@ class StatProdController extends Controller
                 $consumes = DB::table('t_lignefact')
                     ->join('t_produit', 't_lignefact.IDt_ProduitFK', '=', 't_produit.IDt_produitPK')
                     ->join('t_facture', 't_lignefact.IDt_FactureFK', '=', 't_facture.IDt_FacturePK')
-                    ->select('t_produit.RefCodeBar', 't_produit.LibProd', DB::raw('SUM(t_lignefact.Qtte) as total_sales'), DB::raw('SUM(t_lignefact.SousTotalTTC) AS total_ttc'))
+                    ->select(
+                        't_produit.RefCodeBar',
+                        't_produit.LibProd',
+                        DB::raw('SUM(t_lignefact.Qtte) as total_sales'),
+                        DB::raw('SUM(t_lignefact.SousTotalTTC) AS total_ttc')
+                    )
                     ->whereBetween('t_facture.Date', [$request->start, $request->end])
                     ->groupByRaw('t_produit.RefCodeBar, t_produit.LibProd')
                     ->where('t_lignefact.CodeStruct', '=', Auth::user()->CodeStruct)
@@ -33,8 +39,18 @@ class StatProdController extends Controller
                     ->where('t_facture.effacer', '=', 0)
                     ->get();
             }
+
+            $tot_consumes = DB::table('t_facture')
+                ->select(
+                    DB::raw('SUM(t_facture.Montant_TTC) as Montant_TTC')
+                )
+                ->where('t_facture.CodeStruct', '=', Auth::user()->CodeStruct)
+                ->whereBetween('t_facture.Date', [$request->start, $request->end])
+                ->where('t_facture.NatureFacture', '=', 'FT')
+                ->where('t_facture.effacer', '=', 0)
+                ->get();
         }
 
-        return view('admin.statistique.consumes', compact('consumes'));
+        return view('admin.statistique.consumes', compact('consumes', 'tot_consumes'));
     }
 }
