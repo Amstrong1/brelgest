@@ -11,9 +11,19 @@
     <meta name="author" content="BrelSoft Technologies">
     <title>BrelGest</title>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
+    <script src="https://cdn.tailwindcss.com/3.3.0"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            corePlugins: {
+                preflight: false,
+            },
+        };
+    </script>
+
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('assets/css/datatable.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/app.css') }}" />
 
@@ -22,18 +32,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
-        integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
     <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
     <style>
         body {
             font-family: 'Nunito';
         }
     </style>
+    @livewireStyles
+
 </head>
 
 <body>
@@ -50,16 +56,17 @@
                 @yield('content')
             </main>
 
-           @include('includes.footer')
+            @include('includes.footer')
 
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
     <script src="{{ asset('assets/js/alpine.min.js') }}" defer></script>
     <script src="{{ asset('assets/js/init-alpine.js') }}"></script>
     <script src="{{ asset('assets/js/script.js') }}"></script>
     @include('sweetalert::alert')
-
+    @livewireScripts
 </body>
 
 </html>

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -36,8 +35,9 @@ class FactureController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        $request->session()->put('facture_session_id', Auth::user()->CodeStruct . date('YmdHis'));
 
         $invoices = DB::table('t_facture')
             ->select('NumFacture')
@@ -51,26 +51,10 @@ class FactureController extends Controller
             ->select('IDt_ClientPK', 'NomCli')
             ->where('CodeStruct', '=', Auth::user()->CodeStruct)
             ->where('effacer', '=', 0)
+            ->orderBy('NomCli', 'asc')
             ->get();
-        return view('admin.invoice.create', compact('customers', 'invoices'));
-    }
 
-    /**
-     * Show the product list on typing.
-     *
-     */
-    public function selectSearch(Request $request)
-    {
-        $products = [];
-        if ($request->has('q')) {
-            $search = $request->q;
-            $products = DB::table('t_produit')->select("id", "LibProd", "PrixHT", "AssujetisTVA", "IDt_ProduitPK")
-                ->where('CodeStruct', '=', Auth::user()->CodeStruct)
-                ->where('LibProd', 'LIKE', "%$search%")
-                ->where('effacer', '=', 0)
-                ->get();
-        }
-        return response()->json($products);
+        return view('admin.invoice.create', compact('customers', 'invoices'));
     }
 
     /**
