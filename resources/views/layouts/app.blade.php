@@ -42,6 +42,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    @laravelPWA
 </head>
 
 <body class="font-sans antialiased">

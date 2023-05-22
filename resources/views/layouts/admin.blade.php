@@ -38,8 +38,7 @@
             font-family: 'Nunito';
         }
     </style>
-    @livewireStyles
-
+        @livewireStyles
 </head>
 
 <body>

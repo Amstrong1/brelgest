@@ -9,8 +9,8 @@
             <div class="w-full overflow-x-auto">
 
                 <div class="flex justify-start flex-1 lg:mr-32">
-                    <form class="md:flex md:justify-start md:flex-1 lg:mr-32" action="{{ route('admin.statistique.consumer') }}"
-                        method="post">
+                    <form class="md:flex md:justify-start md:flex-1 lg:mr-32"
+                        action="{{ route('admin.statistique.consumer') }}" method="post">
                         @csrf
                         <div class="relative w-64 max-w-xl mr-6 ml-6 mt-6 mb-6 focus-within:text-purple-500">
                             <label for="start_id"
@@ -45,16 +45,71 @@
                         <div class="w-24 mr-4 ml-4 mt-8 focus-within:text-purple-500">
                             <button type="submit"
                                 class="w-24 px-2 py-2 mb-4 mt-2 text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input">
-                                {{-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
-                                </svg> --}}Actualiser
+                                Actualiser
                             </button>
                         </div>
                     </form>
                 </div>
                 @if ($consumers != null)
+                    <h2 class="my-6 text-md font-semibold text-gray-700 dark:text-gray-200">
+                        Bilan de la période définie
+                    </h2>
+                    <table class="w-full whitespace-no-wrap mb-4">
+                        <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                            @foreach ($tot_consumers as $tot_consumer)
+                                <tr class="text-gray-700 dark:text-gray-400">
+                                    <td class="px-2 py-2 text-sm">Total TTC</td>
+                                    <td class="px-2 py-2 text-sm">
+
+                                        {{ number_format($tot_consumer->Montant_TTC, 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                                <tr class="text-gray-700 dark:text-gray-400">
+                                    <td class="px-2 py-2 text-sm">Total HT [E]</td>
+                                    <td class="px-2 py-2 text-sm">
+                                        {{ number_format($tot_consumer->Montant_HT_E, 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                                <tr class="text-gray-700 dark:text-gray-400">
+                                    <td class="px-2 py-2 text-sm">Total HT [A-EX]</td>
+                                    <td class="px-2 py-2 text-sm">
+                                        {{ number_format($tot_consumer->Montant_HT_AEX, 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                                <tr class="text-gray-700 dark:text-gray-400">
+                                    <td class="px-2 py-2 text-sm">Total HT [B]</td>
+                                    <td class="px-2 py-2 text-sm">
+                                        {{ number_format($tot_consumer->Montant_HT_B, 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                                <tr class="text-gray-700 dark:text-gray-400">
+                                    <td class="px-2 py-2 text-sm">Total TVA [B] </td>
+                                    <td class="px-2 py-2 text-sm">
+                                        {{ number_format($tot_consumer->Montant_TVA_B, 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                                <tr class="text-gray-700 dark:text-gray-400">
+                                    <td class="px-2 py-2 text-sm">Total HT</td>
+                                    <td class="px-2 py-2 text-sm">
+                                        {{ number_format($tot_consumer->Montant_HT_D, 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                                <tr class="text-gray-700 dark:text-gray-400">
+                                    <td class="px-2 py-2 text-sm">Total TVA [D]</td>
+                                    <td class="px-2 py-2 text-sm">
+                                        {{ number_format($tot_consumer->Montant_TVA_D, 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                                <tr class="text-gray-700 dark:text-gray-400">
+                                    <td class="px-2 py-2 text-sm">Total AIB</td>
+                                    <td class="px-2 py-2 text-sm">
+                                        {{ number_format($tot_consumer->Montant_AIB, 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
                     <table class="w-full whitespace-no-wrap" id="datatable_cli">
                         <thead>
                             <tr
@@ -67,7 +122,6 @@
                                 <th class="px-2 py-2">Total TVA [B]</th>
                                 <th class="px-2 py-2">Total HT [D]</th>
                                 <th class="px-2 py-2">Total TVA [D]</th>
-                                {{-- <th class="px-2 py-2">Total TS [B]</th> --}}
                                 <th class="px-2 py-2">Total AIB</th>
                             </tr>
                         </thead>
@@ -98,9 +152,6 @@
                                     <td data-order="{{ $consumer->Montant_TVA_D }}" class="px-2 py-2 text-sm">
                                         {{ number_format($consumer->Montant_TVA_D, 0, '', ' ') }}
                                     </td>
-                                    {{-- <td data-order="{{ $consumer->Montant_TS_B }}" class="px-2 py-2 text-sm">
-                                        {{ number_format($consumer->Montant_TS_B, 0, '', ' ') }}
-                                    </td> --}}
                                     <td data-order="{{ $consumer->Montant_AIB }}" class="px-2 py-2 text-sm">
                                         {{ number_format($consumer->Montant_AIB, 0, '', ' ') }}
                                     </td>

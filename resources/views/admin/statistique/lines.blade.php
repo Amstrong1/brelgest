@@ -44,16 +44,26 @@
                     <div class="w-24 mr-4 ml-4 mt-8 focus-within:text-purple-500">
                         <button type="submit"
                             class="w-24 px-2 py-2 mb-4 mt-2 text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input">
-                            {{-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
-                            </svg> --}}Actualiser
+                            Actualiser
                         </button>
                     </div>
                 </form>
 
                 @if ($invlines != null)
+                    <table class="w-full whitespace-no-wrap mb-4">
+                        <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                            @foreach ($invlines_sum as $invline_sum)
+                                <tr class="text-gray-700 dark:text-gray-400">
+                                    <td class="px-2 py-2 text-sm">Total TTC de la période défini</td>
+                                    <td class="px-2 py-2 text-sm">
+
+                                        {{ number_format($invline_sum->Montant_TTC, 0, '', ' ') }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
                     <table id="datatable_prod" class="w-full p-6 whitespace-no-wrap">
                         <thead>
                             <tr
@@ -118,6 +128,8 @@
                             @endforeach
                         </tbody>
                     </table>
+                @else
+                    Aucune données à afficher
                 @endif
             </div>
         </div>
