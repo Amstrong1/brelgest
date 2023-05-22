@@ -79,3 +79,24 @@ $(document).ready(function () {
         }
     );
 });
+
+function setCustomer() {
+    document.getElementById('customer').value = document.getElementsByClassName('peer')[0].value;
+}
+
+//modify aib total on aib select change after defined time
+function setAIBInt() {
+    setInterval(setAIB, 5000);
+}
+
+function setAIB() {
+    if (document.getElementById('aib_type').value == 'AIB5') {
+        document.getElementById('aib_total').value = document.getElementById('ttc_total').value * 0.05;
+    }
+    if (document.getElementById('aib_type').value == 'AIB1') {
+        document.getElementById('aib_total').value = document.getElementById('ttc_total').value * 0.01;
+    }
+    if (document.getElementById('aib_type').value == 'AIB0') {
+        document.getElementById('aib_total').value = document.getElementById('ttc_total').value * 0;
+    }
+}

@@ -25,8 +25,6 @@ class FactureController extends Controller
             ->orderByRaw('abs(NumFacture) desc')
             ->get();
 
-        // dd($invoices);
-
         return view('admin.invoice.index', compact('invoices'));
     }
 
@@ -58,6 +56,18 @@ class FactureController extends Controller
     }
 
     /**
+     * delete a draft created invoice.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function cancel_invoice(Request $request)
+    {
+        DB::table('t_lignefact_brouillon')->where('id_fact_brouillon', $request->session()->get('facture_session_id'))->delete();
+        return redirect()->route('admin.invoice.create');
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -65,53 +75,17 @@ class FactureController extends Controller
      */
     public function store(Request $request)
     {
-
-        $taux_tva = 0;
-        $paie_tva = 0;
-
-        if ($request->tva_btotal != 0 || $request->htd_total != 0) {
-            $taux_tva = 0.18;
-            $paie_tva = 1;
-        }
-
+        // generation de id facture pk
         if (!$request->session()->has('gnGnVarNum_Fin_Id')) {
             $request->session()->put('gnGnVarNum_Fin_Id', 0);
         }
         if ($request->session()->get('gnGnVarNum_Fin_Id') == 50) {
             $request->session()->put('gnGnVarNum_Fin_Id', 0);
         }
+        $id_facture = Auth::user()->CodeStruct . date('YmdHisv') . 'TFA' . $request->session()->get('gnGnVarNum_Fin_Id');
 
-        if (!isset($request->customer)) {
-            $customer = $request->new_name;
-
-            $new_idClient = Auth::user()->CodeStruct . date('YmdHisv') . 'TCL' . $request->session()->get('gnGnVarNum_Fin_Id');
-            $save_customer = DB::table('t_client')->insert([
-                'IDt_ClientPK' => $new_idClient,
-                'ModifierLe' => date('Y-m-d H-i-s'),
-                'AjouterPar' => Auth::user()->Login,
-                'ModifierPar' => Auth::user()->Login,
-                'CodeStruct' => Auth::user()->CodeStruct,
-                'NomCli' => $request->new_name,
-                'NumIFU' => $request->new_ifu,
-                'Tel_1' => $request->new_contact,
-                'PaieTVA' => $paie_tva,
-                'CategorieActivité' => $request->tax,
-                'DateAjoutLigne' => date('Y-m-d H-i-s'),
-            ]);
-
-            if ($save_customer) {
-                Alert::toast('Client enregistré', 'success');
-                $customer_id = $new_idClient;
-                $customer = $request->new_name;
-            } else {
-                Alert::toast('Une erreur est survenue', 'error');
-                return redirect()->back()->withInput($request->input());
-            }
-        } else {
-            $customer_id = explode("/", $request->customer)[0];
-            $customer = explode("/", $request->customer)[1];
-        }
-
+        // calcul du numero de facture
+        $num_fact = 0;
         $invoices = DB::table('t_facture')
             ->select('NumFacture')
             ->where('CodeStruct', '=', Auth::user()->CodeStruct)
@@ -119,88 +93,113 @@ class FactureController extends Controller
             ->where('effacer', '=', 0)
             ->orderBy('NumFacture', 'desc')
             ->first();
-        $num_fact = 0;
         if (isset($invoices->NumFacture)) {
             $num_fact = $invoices->NumFacture + 1;
         } else {
             $num_fact = 1;
         }
 
-        $id_facture = Auth::user()->CodeStruct . date('YmdHisv') . 'TFA' . $request->session()->get('gnGnVarNum_Fin_Id');
+        // gestion du client
+        $id_client = ' ';
+        $customer = 'inconnu';
+        // le client est deja enregistré (champ select)
+        if (!empty($request->customer)) {
+            $client = DB::table('t_client')
+                ->select('NomCli')
+                ->where('IDt_ClientPK', '=', $request->customer)
+                ->first();
+
+            $id_client = $request->customer;
+            $customer = $client->NomCli;
+        }
+        // nouveau client
+        if (!empty($request->new_name) || !empty($request->new_ifu)) {
+            // enregistrer le nouveau client
+            $new_id = Auth::user()->CodeStruct . date('YmdHisv') . 'TCL' . $request->session()->get('gnGnVarNum_Fin_Id');
+            $save_customer = DB::table('t_client')->insert([
+                'IDt_ClientPK' => $new_id,
+                'AjouterPar' => Auth::user()->Login,
+                'CodeStruct' => Auth::user()->CodeStruct,
+                'NomCli' => $request->new_name,
+                'Tel_1' => $request->new_contact,
+                'NumIFU' => $request->new_ifu
+            ]);
+
+            if ($save_customer) {
+                Alert::toast('Client enregistré', 'success');
+                $id_client = $new_id;
+                $customer = $request->new_name;
+            } else {
+                Alert::toast('Une erreur est survenue', 'error');
+                return redirect()->back()->withInput($request->input());
+            }
+        }
 
         $save_invoice = DB::table('t_facture')->insert([
             'IDt_FacturePK' => $id_facture,
             'AjouterPar' => Auth::user()->Login,
-            'ModifierLe' => date('Y-m-d H-i-s'),
             'CodeStruct' => Auth::user()->CodeStruct,
-            'NumFacture' => $num_fact,
             'Date' => $request->fact_date,
+            'NumFacture' => $num_fact,
             'Observation' => $request->object,
-            'IDClientFK' =>  $customer_id,
-            'Tota_Remise' => '',
-            'DateCommande' => $request->fact_date,
-            'Total_DejaPaye' => '',
+            'IDClientFK' => $id_client,
             'NomClient' => $customer,
             'Montant_HT_AEX' => $request->hta_total,
-            'Montant_TVA_B' => $request->tva_btotal,
-            'MontantTotal_TVA' => $request->tva_btotal + $request->tva_dtotal,
             'Montant_HT_B' => $request->htb_total,
-            'Montant_TS_B' => '',
-            'Montant_AIB' => $request->aib_total,
-            'Montant_TTC' => $request->ttc_total,
-            'NumeroOperateur' => '',
-            'NomOperateur' => Auth::user()->Nom . Auth::user()->Prénom,
-            'TypeAIB' => explode("/", $request->aib)[1],
-            'TauxTVA' => $taux_tva,
-            'CategorieFacture' => '',
-            'MontantAIBRetenuParClient' => $request->aib,
             'Montant_HT_D' => $request->htd_total,
-            'Montant_TVA_D' => $request->tva_dtotal,
-            'TableauDeDonnéesDeNormalisation' => '',
-            'Montant_HT_C' => $request->htc_total,
             'Montant_HT_E' => $request->hte_total,
-            'Montant_HT_F' => $request->htf_total,
-            'TypeFacture' => 'FV',
-            'Montant_TVA_E' => '',
-            'Montant_TS_D' => '',
-            'Montant_TS_E' => '',
-            'DateAjoutLigne' => date('Y-m-d H-i-s'),
+            'Montant_TVA_B' => $request->hta_total,
+            'Montant_TVA_D' => $request->tva_btotal,
+            'MontantTotal_TVA' => $request->tva_dtotal,
+            'Montant_TTC' => $request->ttc_total,
+            'TypeAIB' => $request->aib,
+            'MontantAIBRetenuParClient' => $request->aib_total,
+            'NatureFacture' => 'FT',
             'MT_CLI_Percu' => $request->mt_percu,
             'MT_CLI_Rendu' => $request->mt_rendu,
             'MT_CLI_Reliquat' => $request->reliquat,
-            'NatureFacture' => 'FT'
         ]);
 
-        for ($i = 0; $i < count($request->product); $i++) {
-            $a = $i + 1;
+        $invoice_lines = DB::table('t_lignefact_brouillon')
+            ->join('t_produit', 't_produit.IDt_ProduitPK', '=', 't_lignefact_brouillon.product')
+            ->select('t_lignefact_brouillon.*', 't_produit.LibProd', 't_produit.RefCodeBar', 't_produit.RefCodeBar', 't_produit.PrixHT')
+            ->where('id_fact_brouillon', $request->session()->get('facture_session_id'))
+            ->orderBy('id', 'asc')
+            ->get();
+        $c = 0;
+        foreach ($invoice_lines as $invoice_line) {
+            //calcler taux tva
+            if ($invoice_line->TypeTaxe == 'A' || $invoice_line->TypeTaxe == 'E') {
+                $taux_tva = 0;
+                $tva = 1;
+            }
+            if ($invoice_line->TypeTaxe == 'B' || $invoice_line->TypeTaxe == 'D') {
+                $taux_tva = 0.18;
+                $tva = 1.18;
+            }
             $save_invoice_line = DB::table('t_lignefact')->insert([
                 'IDt_LigneFactPK' => Auth::user()->CodeStruct . date('YmdHisv') . 'TLF' . $request->session()->get('gnGnVarNum_Fin_Id'),
                 'AjouterPar' => Auth::user()->Login,
-                'ModifierPar' => Auth::user()->Login,
-                'ModifierLe' => date('Y-m-d H-i-s'),
                 'CodeStruct' => Auth::user()->CodeStruct,
-                'LibProd' => $request->product[$i],
-                'Qtte' => $request->qte[$i],
-                'PrixUniTTTC' => $request->pu[$i],
-                'SousTotalTTC' =>   $request->sub_price_total[$i],
-                'NumOrdre' => $a,
-                'IDt_ProduitFK' => $request->id[$i],
-                'Remise' => '',
+                'ModifierLe' => $invoice_line->created_at,
+                'LibProd' => $invoice_line->LibProd,
+                'Qtte' => $invoice_line->Qtte,
+                'PrixUnitHT' => $invoice_line->PrixHT,
+                'PrixUniTTTC' => $invoice_line->PrixHT * $tva,
+                'SousTotalTTC' => $invoice_line->PrixHT * $tva * $invoice_line->Qtte,
+                'NumOrdre' => ++$c,
+                'IDt_ProduitFK' => $invoice_line->product,
                 'TauxTVA' => $taux_tva,
-                'MontantTS' => '',
-                'RefCodeBar' => '',
-                'PrixUnitHT' => $request->pu[$i],
                 'IDt_FactureFK' => $id_facture,
-                'PrixUnitTS' => '',
-                'TypeTaxe' => $request->tax[$i],
-                'LaTVAEstIncluse' => $paie_tva,
+                'TypeTaxe' => $invoice_line->TypeTaxe,
                 'DateAjoutLigne' => date('Y-m-d H-i-s'),
-                'packproduit_nbre' => '',
-                'packproduit_prix' => '',
             ]);
+            if ($save_invoice_line) {
+                $request->session()->put('gnGnVarNum_Fin_Id', $request->session()->get('gnGnVarNum_Fin_Id') + 1);
+            }
         }
 
-        if ($save_invoice && $save_invoice_line) {
+        if ($save_invoice) {
             $request->session()->put('gnGnVarNum_Fin_Id', $request->session()->get('gnGnVarNum_Fin_Id') + 1);
             Alert::toast('Facture enregistrée', 'success');
             return redirect()->route('admin.invoice.create');

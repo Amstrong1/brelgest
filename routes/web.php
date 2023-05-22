@@ -6,19 +6,21 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AlertController;
 use App\Http\Controllers\EmptyController;
 use App\Http\Controllers\EntryController;
+use App\Http\Controllers\PdfA4Controller;
+use App\Http\Controllers\CreditController;
 use App\Http\Controllers\CurrentController;
 use App\Http\Controllers\FactureController;
+use App\Http\Controllers\InvLineController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StatCliController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ProformaController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\StatProdController;
 use App\Http\Controllers\EmptySoonController;
+use App\Http\Controllers\PdfTicketController;
 use App\Http\Controllers\ProdFamilController;
 use App\Http\Controllers\Admin\HomeController;
-use App\Http\Controllers\CreditController;
-use App\Http\Controllers\InvLineController;
-use App\Http\Controllers\ProformaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,9 +68,13 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'dashboard', 'as' => 'admin.
     Route::group(['prefix' => 'invoice', 'as' => 'invoice.'], function () {
         Route::get('/credit_note', [CreditController::class, 'index'])->name('credit_note');
         Route::get('/proforma', [ProformaController::class, 'index'])->name('proforma');
+        Route::get('/canceling', [FactureController::class, 'cancel_invoice'])->name('cancel_invoice');
     });
 
     Route::resource('/invoice', FactureController::class);
+    Route::get('/A4pdf/{fact}', [PdfA4Controller::class, 'index'])->name('pdfa4');
+    Route::get('/Ticketpdf/{fact}', [PdfTicketController::class, 'index'])->name('pdfticket');
+
 });
 
 

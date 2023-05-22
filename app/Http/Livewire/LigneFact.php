@@ -11,6 +11,9 @@ use App\Models\LigneFactureBrouillon;
 class LigneFact extends Component
 {
     public $prods, $product, $Qtte, $TypeTaxe, $prod_id;
+
+    public $pu;
+
     public $updateMode = false;
 
     public function render(Request $request)
@@ -59,12 +62,21 @@ class LigneFact extends Component
         $this->resetInputFields();
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         $post = LigneFactureBrouillon::findOrFail($id);
+
+        $request->session()->put('product', $post->product);
+
+        $produit = DB::table('t_produit')
+            ->select('PrixHT')
+            ->where('IDt_ProduitPK', '=', $post->product)
+            ->first();
+
         $this->prod_id = $id;
         $this->Qtte = $post->Qtte;
         $this->TypeTaxe = $post->TypeTaxe;
+        $this->pu = substr($produit->PrixHT, 0, strpos($produit->PrixHT, '.'));
 
         $this->updateMode = true;
     }
@@ -75,7 +87,7 @@ class LigneFact extends Component
         $this->resetInputFields();
     }
 
-    public function update()
+    public function update(Request $request)
     {
         $validatedDate = $this->validate([
             'Qtte' => 'required',
@@ -87,6 +99,10 @@ class LigneFact extends Component
             'Qtte' => $this->Qtte,
             'TypeTaxe' => $this->TypeTaxe,
         ]);
+
+        DB::table('t_produit')
+            ->where('IDt_ProduitPK', $request->session()->get('product'))
+            ->update(['PrixHT' => $this->pu]);
 
         $this->updateMode = false;
 
