@@ -110,7 +110,7 @@
                                         {{ $invline->TypeTaxe }}
                                     </td>
                                     <td data-order="{{ $invline->Qtte }}" class="px-2 py-2 text-sm">
-                                        {{ number_format($invline->Qtte, 0, '', ' ') }}
+                                        {{ number_format($invline->Qtte * $invline->packproduit_nbre, 0, '', ' ') }}
                                     </td>
                                     <td data-order="{{ $invline->PrixUnitHT }}" class="px-2 py-2 text-sm">
                                         {{ number_format($invline->PrixUnitHT, 0, '', ' ') }}

@@ -29,6 +29,7 @@ class InvLineController extends Controller
                         't_lignefact.LibProd',
                         't_lignefact.TypeTaxe',
                         't_lignefact.Qtte',
+                        't_lignefact.packproduit_nbre',
                         't_lignefact.PrixUnitHT',
                         't_lignefact.PrixUniTTTC',
                         't_lignefact.SousTotalTTC',
