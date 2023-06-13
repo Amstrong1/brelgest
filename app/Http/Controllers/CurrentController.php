@@ -10,11 +10,11 @@ class CurrentController extends Controller
     public function index()
     {
 
-        $entry_qty = DB::table('t_entréestock')
-            ->select('t_entréestock.IDt_ProduitFK', DB::raw('SUM(t_entréestock.Qtte) as qte_entree'))
-            ->where('t_entréestock.CodeStruct', '=', Auth::user()->CodeStruct)
-            ->where('t_entréestock.Effacer', '=', 0)
-            ->groupBy('t_entréestock.IDt_ProduitFK');
+        $entry_qty = DB::table('t_entreestock')
+            ->select('t_entreestock.IDt_ProduitFK', DB::raw('SUM(t_entreestock.Qtte) as qte_entree'))
+            ->where('t_entreestock.CodeStruct', '=', Auth::user()->CodeStruct)
+            ->where('t_entreestock.Effacer', '=', 0)
+            ->groupBy('t_entreestock.IDt_ProduitFK');
 
         $exit_qty = DB::table('t_sortiestock')
             ->select('t_sortiestock.IDt_ProduitFK', DB::raw('SUM(t_sortiestock.Qtte) as qte_sortie'))
@@ -27,6 +27,7 @@ class CurrentController extends Controller
             ->select('t_lignefact.IDt_ProduitFK', DB::raw('SUM(t_lignefact.Qtte) as qte_vendu'))
             ->where('t_lignefact.CodeStruct', '=', Auth::user()->CodeStruct)
             ->where('t_lignefact.Effacer', '=', 0)
+            ->where('t_facture.Effacer', '=', 0)
             ->where('t_facture.NatureFacture', '=', 'FT')
             ->groupBy('t_lignefact.IDt_ProduitFK');
 
@@ -34,6 +35,7 @@ class CurrentController extends Controller
             ->leftJoinSub($entry_qty, 'entries', function ($join) {
                 $join->on('t_produit.IDt_ProduitPK', '=', 'entries.IDt_ProduitFK');
             })
+            
             ->leftJoinSub($exit_qty, 'exits', function ($join) {
                 $join->on('t_produit.IDt_ProduitPK', '=', 'exits.IDt_ProduitFK');
             })
@@ -50,6 +52,7 @@ class CurrentController extends Controller
                 'solds.qte_vendu'
             )
             ->where('t_produit.effacer', '=', 0)
+            ->where('t_produit.CodeStruct', '=', Auth::user()->CodeStruct)
             ->orderBy('t_produit.LibProd', 'asc')
             ->get();
 

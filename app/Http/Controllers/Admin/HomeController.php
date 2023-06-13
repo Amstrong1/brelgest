@@ -53,6 +53,8 @@ class HomeController extends Controller
         $invoices_req = DB::table('t_facture')
             ->select('*')
             ->where('CodeStruct', '=', Auth::user()->CodeStruct)
+            ->where('t_facture.NatureFacture', '=', 'FT')
+            ->where('t_facture.TypeFacture', '=', 'FV')
             ->where('effacer', '=', 0)
             ->count();
 
@@ -60,6 +62,7 @@ class HomeController extends Controller
             ->select(DB::raw('SUM(t_facture.Montant_TTC) as Montant_TTC'))
             ->where('CodeStruct', '=', Auth::user()->CodeStruct)
             ->where('t_facture.NatureFacture', '=', 'FT')
+            ->where('t_facture.TypeFacture', '=', 'FV')
             ->where('Date', '=', date('Y-m-d'))
             ->where('effacer', '=', 0)
             ->get();

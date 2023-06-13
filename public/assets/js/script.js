@@ -100,3 +100,12 @@ function setAIB() {
         document.getElementById('aib_total').value = document.getElementById('ttc_total').value * 0;
     }
 }
+
+function setAmountReturn() {
+    document.getElementById('mt_a_rendre').value = document.getElementById('mt_percu').value - document.getElementById('ttc_total').value;
+    document.getElementById('mt_rendu').value = document.getElementById('mt_percu').value - document.getElementById('ttc_total').value;
+}
+
+function setAmountRest() {
+    document.getElementById('reliquat').value = document.getElementById('mt_a_rendre').value - document.getElementById('mt_rendu').value;
+}

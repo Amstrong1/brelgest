@@ -85,10 +85,29 @@ class PdfA4Controller extends Controller
 
     public function index(Request $request, $fact)
     {
-        $cust = array();
-
         //sans validation le client n'est pas enregistré
-        //need request for get customer
+        $customerName = 'inconnu';
+        $customerIFU = ' ';
+        $customerTel = ' ';
+
+        // le client est fourni par le champ select
+        // if (!empty($request->customer)) {
+        //     $client = DB::table('t_client')
+        //         ->select('NomCli', 'NumIFU', 'Tel_1')
+        //         ->where('IDt_ClientPK', '=', $request->customer)
+        //         ->first();
+
+        //     $customerName = $client->NomCli;
+        //     $customerIFU = $client->NumIFU;
+        //     $customerTel = $client->Tel_1;
+        // }
+
+        // // le client est fourni par le formulaire
+        // if (!empty($request->new_name) || !empty($request->new_ifu)) {
+        //         $customerName = $request->new_name;
+        //         $customerIFU = $request->new_contact;
+        //         $customerTel = $request->new_ifu;
+        // }
 
         $struct = DB::table('gmonentreprise')
             ->select('NumIFU', 'RCCM', 'Denomination', 'ActiviteExerce')
@@ -102,14 +121,14 @@ class PdfA4Controller extends Controller
         $this->fpdf->SetFont('Arial', 'B', 10);
         $this->my_cell(0, 10, $struct->ActiviteExerce, 0, 0, 'L', '0');
         $this->fpdf->Ln(5);
-        $this->my_cell(0, 10, $struct->NumIFU . ' - ' . $struct->RCCM, 0, 0, 'L', '0');
+        $this->my_cell(0, 10, utf8_decode('IFU n° ') . $struct->NumIFU . ' - ' . $struct->RCCM, 0, 0, 'L', '0');
         $this->fpdf->Ln(12);
 
         $this->ligne_head_table(utf8_decode("DELIVRE A"), utf8_decode("FACTURE"));
         $this->fpdf->SetFont('Arial', '', 10);
-        $this->ligne_head_table(utf8_decode("CLIENT : "), utf8_decode("Opérateur : " . Auth::user()->Nom . ' ' . Auth::user()->Prénom));
-        $this->ligne_head_table(utf8_decode("N° IFU : "), utf8_decode("Facture N° : " . $fact));
-        $this->ligne_head_table(utf8_decode("CONTACTS : "), utf8_decode("Date d'émission : " . date('d-m-Y')));
+        $this->ligne_head_table(utf8_decode("CLIENT : " . $customerName), utf8_decode("Opérateur : " . Auth::user()->Nom . ' ' . Auth::user()->Prénom));
+        $this->ligne_head_table(utf8_decode("N° IFU : " . $customerIFU), utf8_decode("Facture N° : " . $fact));
+        $this->ligne_head_table(utf8_decode("CONTACTS : " . $customerTel), utf8_decode("Date d'émission : " . date('d-m-Y')));
 
         $this->fpdf->Ln(10);
         $this->fpdf->SetFont('Arial', 'B', 10);

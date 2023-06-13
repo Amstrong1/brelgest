@@ -236,7 +236,20 @@ class FactureController extends Controller
      */
     public function edit($id)
     {
-        //
+        $invoice = DB::table('t_facture')
+            ->join('t_client', 't_facture.IDClientFK', '=', 't_client.IDt_ClientPK')
+            ->select('*')
+            ->where('t_facture.CodeStruct', '=', Auth::user()->CodeStruct)
+            ->where('IDt_FacturePK', '=', $id)
+            ->first();
+
+            $invoiceLines = DB::table('t_lignefact')
+            ->select('LibProd', 'TypeTaxe', 'Qtte', 'PrixUnitHT', 'PrixUniTTTC', 'SousTotalTTC')
+            ->where('CodeStruct', '=', Auth::user()->CodeStruct)
+            ->where('IDt_FactureFK', '=', $id)
+            ->get();
+        // dd($invoiceLines);
+        return view('admin.invoice.edit', compact('invoice', 'invoiceLines'));
     }
 
     /**

@@ -20,9 +20,16 @@
             </ol>
         </nav>
 
-        <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-            Détails de la facture choisie
-        </h2>
+        <div class="flex justify-between">
+            <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+                Détails de la facture choisie
+            </h2>
+            {{-- <div>                
+                <a href=""
+                    class="cursor-pointer inline-block pl-4 pr-4 py-2 rounded-md text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+                    Imprimer</a>
+            </div> --}}
+        </div>
 
         <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
             <div class="w-full overflow-x-auto">

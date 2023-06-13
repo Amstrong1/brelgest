@@ -444,7 +444,7 @@
         </ul>
     </div>
 
-    <div class="md:mt-24 p-4 bg-slate-100 rounded-lg md:p-6 dark:bg-gray-800">
+    <div class="md:mt-24 p-4 rounded-lg md:p-6">
         <p class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
             BrelGest v2.0.1
         </p>
