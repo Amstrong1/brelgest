@@ -24,7 +24,7 @@ class CurrentController extends Controller
 
         $sold_qty = DB::table('t_lignefact')
             ->join('t_facture', 't_lignefact.IDt_FactureFK', '=', 't_facture.IDt_FacturePK')
-            ->select('t_lignefact.IDt_ProduitFK', DB::raw('SUM(t_lignefact.Qtte) as qte_vendu'))
+            ->select('t_lignefact.IDt_ProduitFK', DB::raw('SUM(t_lignefact.Qtte * t_lignefact.packproduit_nbre) as qte_vendu'))
             ->where('t_lignefact.CodeStruct', '=', Auth::user()->CodeStruct)
             ->where('t_lignefact.Effacer', '=', 0)
             ->where('t_facture.Effacer', '=', 0)

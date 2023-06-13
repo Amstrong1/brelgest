@@ -54,7 +54,6 @@ class HomeController extends Controller
             ->select('*')
             ->where('CodeStruct', '=', Auth::user()->CodeStruct)
             ->where('t_facture.NatureFacture', '=', 'FT')
-            ->where('t_facture.TypeFacture', '=', 'FV')
             ->where('effacer', '=', 0)
             ->count();
 
