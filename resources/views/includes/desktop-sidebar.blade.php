@@ -285,20 +285,8 @@
                             @endif
                             <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                                 href="{{ route('admin.stock.exits') }}">
-                                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                    class="w-6 h-6" version="1.1" id="svg4"
-                                    sodipodi:docname="stock_sortie.svg"
-                                    inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
-                                    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-                                    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-                                    xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-                                    <defs id="defs8" />
-                                    <sodipodi:namedview id="namedview6" pagecolor="#505050" bordercolor="#eeeeee"
-                                        borderopacity="1" inkscape:pageshadow="0" inkscape:pageopacity="0"
-                                        inkscape:pagecheckerboard="0" showgrid="false" inkscape:zoom="16.083333"
-                                        inkscape:cx="12" inkscape:cy="11.968912" inkscape:window-width="1366"
-                                        inkscape:window-height="704" inkscape:window-x="0" inkscape:window-y="0"
-                                        inkscape:window-maximized="1" inkscape:current-layer="svg4" />
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                     <g id="g1051">
                                         <path
                                             d="m 3.375,7.5 c 5.7882751,-0.00387 11.576941,0.00775 17.364972,-0.00581 C 21.595529,7.4339555 21.834559,6.5323633 21.75,5.8218273 21.742022,5.1101732 21.898286,4.1670922 21.062766,3.8384531 20.290889,3.660907 19.478756,3.7887568 18.688896,3.75 13.545989,3.7538709 8.4026904,3.7422557 3.2600281,3.7558118 2.4044713,3.8160445 2.1654414,4.7176367 2.25,5.4281727 2.2579783,6.1398268 2.1017142,7.0829078 2.9372344,7.4115469 3.0755185,7.4702767 3.2251887,7.5000791 3.375,7.5 Z"
