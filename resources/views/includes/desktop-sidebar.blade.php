@@ -285,7 +285,6 @@
                             @endif
                             <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                                 href="{{ route('admin.stock.exits') }}">
-                                <?xml version="1.0" encoding="UTF-8" standalone="no"?>
                                 <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                     class="w-6 h-6" version="1.1" id="svg4"
                                     sodipodi:docname="stock_sortie.svg"
